@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rich Client!</title>
+
+</head>
+<body>
+
+<h1>"Rich" Client for <i>Simple HTTP Server</i></h1>
+<h2>View the "Hello" Message</h2>
+<p><button id="btn-hello">See contents of <kbd>/helloJSON</kbd></button></p>
+<div id="output-hello">???</div>
+
+<hr>
+
+<h2>View the "Current Time" Message</h2>
+
+<p><button id="btn-time">See contents of <kbd>/timeJSON</kbd></button></p>
+<div id="output-time">???</div>
+
+<hr>
+
+<h2>View a random quote</h2>
+
+<p><button id="btn-random">See contents of <kbd>/quotes/random</kbd></button></p>
+<div id="output-random">???</div>
+
+<hr>
+
+<h2>View most recent quote</h2>
+
+<p><button id="btn-recent">See contents of <kbd>/quotes/recent</kbd></button></p>
+<div id="output-recent">???</div>
+
+<hr>
+
+<h2>A Dank Meme ...</h2>
+
+<img src="/spongegar.png" width="200" />
+
+
+  
+</body>
+<script>
+const getJsonFetch = async (url, callback) => {
+  let json;
+  try{
+    const response = await fetch(url,{
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+    json = await response.json();
+  }
+  catch(error){
+    console.log("ERROR:", error);
+    json = {author: `Can't parse data file '${url}'`};
+  }
+  callback(json);
+};
+
+// Curried functions -  https://javascript.info/currying-partials
+// Closures - https://javascript.info/closure
+const simpleFormatter = selector => {
+  const element = document.querySelector(selector);
+  const errorMsg =  "No <kbd>.message</kbd> value found!";
+  return json => element.innerHTML = json.message || errorMsg;
+};
+
+// hello button
+const btnHello = document.querySelector("#btn-hello");
+const helloJSONURL = "/api/helloJSON";
+btnHello.onclick = () => getJsonFetch(helloJSONURL, simpleFormatter("#output-hello"));
+
+// time button
+const btnTime = document.querySelector("#btn-time");
+const timeJSONURL = "/api/timeJSON";
+btnTime.onclick = () => getJsonFetch(timeJSONURL, simpleFormatter("#output-time"));
+
+const quoteFormatter = selector => {
+  const element = document.querySelector(selector);
+  const errorMsg =  "No <kbd>.content</kbd> value found!";
+  return json => (
+    element.innerHTML = json.content
+      ? `<i>${json.content}</i> - <b>${json.author}</b>`
+      : errorMsg
+  );
+};
+
+// random quote button
+const btnRandom = document.querySelector("#btn-random");
+const randomQuoteJSONURL = "/quotes/random";
+btnRandom.onclick = () => getJsonFetch(randomQuoteJSONURL, quoteFormatter("#output-random"));
+
+// most recent quote button 
+const btnRecent = document.querySelector("#btn-recent");
+const recentQuoteJSONURL = "/quotes/recent";
+btnRecent.onclick = () => getJsonFetch(recentQuoteJSONURL, quoteFormatter("#output-recent"));
+
+</script>
+</html>
