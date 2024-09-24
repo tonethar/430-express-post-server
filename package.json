@@ -6,7 +6,8 @@
    "test": "echo \"Tests Complete!\"",
     "pretest": "eslint ./src --fix",
     "old-dev": "nodemon src/app.js",
-    "dev": "nodemon -e js,html,css,json ./src/app.js"
+    "dev": "nodemon -e js,html,css,json ./src/app.js",
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",
