@@ -1,6 +1,6 @@
 const express = require('express');
 
-//const port = 3000;
+// const port = 3000;
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const path = require('path');
@@ -15,6 +15,7 @@ const quotesRouter = require('./routes/quotes.js');
 const apiRouter = require('./routes/api.js');
 
 app.use(express.static('client'));
+app.use(express.json());
 
 // app.all('*', (req, res) => {
 //   res.status(404).sendFile(filePath404Page);
